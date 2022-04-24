@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE
 public class HardEnemy : Enemy
 {
     int hits = 3;
@@ -19,9 +20,12 @@ public class HardEnemy : Enemy
 
     void OnMouseDown()
     {
+        if (!isAlive)
+            return;
         ClickReact();
     }
 
+    // POLYMORPHISM - METHOD OVERRIDING
     protected override void ClickReact()
     {
         hits--;
@@ -29,7 +33,10 @@ public class HardEnemy : Enemy
         if (hits > 0)
             StartCoroutine(MoveOnClick());
         else
-            base.ClickReact();
+        {
+            AddScore(enemyReward[(int)enemyLevel]);
+            StartCoroutine(ExitAnim());
+        }
     }
 
     IEnumerator MoveOnClick()

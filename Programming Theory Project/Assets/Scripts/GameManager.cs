@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+    
     [SerializeField] GameObject[] enemies;
     [SerializeField] float spawnStartDelay = 2.0f;
     [SerializeField] float spawnDelay = 1.5f;
@@ -11,14 +14,79 @@ public class GameManager : MonoBehaviour
     float horizontalBound = 7.5f;
     float verticalBound = 4.5f;
 
+    // ENCAPSULATION
+    int lives = 3;
+    int currentLives;
+    public int Lives
+    {
+        get { return lives; }
+        set
+        {
+            if ((lives - value > 1) || (value > lives))
+                return;
+            else
+                lives = value;
+        }
+    }
+
+    // ENCAPSULATION
+    int score;
+    int currentScore;
+    public int Score
+    {
+        get { return score; }
+        set
+        {
+            if (value < score)
+                return;
+            else
+                score = value;
+        }
+    }
+
+    [Space]
+
+    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI livesText;
+
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
     void Start()
     {
+        score = 0;
         InvokeRepeating(nameof(SpawnEnemy), spawnStartDelay, spawnDelay);
+    }
+
+    void Update()
+    {
+        if (currentScore != score)
+        {
+            currentScore = score;
+            scoreText.SetText("SCORE\n" + currentScore);
+        }
+
+        if (currentLives != lives)
+        {
+            currentLives = lives;
+            livesText.SetText("LIVES\n" + currentLives);
+        }
+
+        if (lives <= 0 && Time.timeScale > 0)
+        {
+            CancelInvoke();
+            Time.timeScale = 0;
+        }
     }
 
     void SpawnEnemy()
     {
-        // Assumes that only 3 enemy types exist with index of 0 = easy, 1 = medium, 2 = hard
+        // Assumes that only 3 enemy types exist with prefab index of 0 = easy, 1 = medium, 2 = hard
         // Done to give more spawn priority to easier enemies
         int index;
         float spawnLevel = Random.value;

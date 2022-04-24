@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// INHERITANCE
 public class EasyEnemy : Enemy
 {
     void Start()
@@ -17,6 +18,8 @@ public class EasyEnemy : Enemy
 
     void OnMouseDown()
     {
+        if (!isAlive)
+            return;
         ClickReact();
     }
 }

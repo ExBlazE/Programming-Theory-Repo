@@ -5,9 +5,11 @@ using UnityEngine;
 public abstract class Enemy : MonoBehaviour
 {
     protected enum Level { easy, medium, hard };
+    protected int[] enemyReward = { 1, 2, 5 };
 
     [SerializeField] protected Level enemyLevel;
     [SerializeField] protected float lifeSpan; // Set in editor for all enemies.
+    protected bool isAlive = true;
 
     private float idleRotationSpeed = 180.0f;
     private float appearTime = 0.1f;
@@ -15,8 +17,9 @@ public abstract class Enemy : MonoBehaviour
 
     protected void LifeTimer()
     {
-        lifeSpan -= Time.deltaTime;
-        if (lifeSpan <= 0)
+        if (isAlive)
+            lifeSpan -= Time.deltaTime;
+        if (lifeSpan <= 0 && isAlive)
         {
             StartCoroutine(ExitAnim());
         }
@@ -24,9 +27,22 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void ClickReact()
     {
+        AddScore();
         StartCoroutine(ExitAnim());
     }
 
+    protected void AddScore()
+    {
+        GameManager.Instance.Score++;
+    }
+
+    // POLYMORPHISM - METHOD OVERLOADING
+    protected void AddScore(int score)
+    {
+        GameManager.Instance.Score += score;
+    }
+
+    // ABSTRACTION
     protected void IdleAnim()
     {
         transform.Rotate(Vector3.forward, idleRotationSpeed * Time.deltaTime);
@@ -50,6 +66,9 @@ public abstract class Enemy : MonoBehaviour
 
     protected IEnumerator ExitAnim()
     {
+        isAlive = false;
+        if (lifeSpan <= 0)
+            GameManager.Instance.Lives--;
         float progress = transform.localScale.x;
 
         while (progress > 0.01f)
