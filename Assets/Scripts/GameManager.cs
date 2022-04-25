@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -79,8 +80,7 @@ public class GameManager : MonoBehaviour
 
         if (lives <= 0 && Time.timeScale > 0)
         {
-            CancelInvoke();
-            Time.timeScale = 0;
+            GameOver();
         }
     }
 
@@ -105,5 +105,13 @@ public class GameManager : MonoBehaviour
         float xPos = Random.Range(-horizontalBound, horizontalBound);
         float yPos = Random.Range(-verticalBound, verticalBound);
         return new Vector3(xPos, yPos, 0);
+    }
+
+    void GameOver()
+    {
+        CancelInvoke();
+        ScoreCarrier carrier = GameObject.Find("Score Carrier").GetComponent<ScoreCarrier>();
+        carrier.FinalScore = score;
+        SceneManager.LoadScene(2);
     }
 }
