@@ -437,7 +437,7 @@ MonoBehaviour:
   - {fileID: 6268254200502695685, guid: 6e4427a96de5bd14db77212dbceb3430, type: 3}
   - {fileID: 1070048756269288871, guid: e3c5f2087e25a08408c2e0cc9845fa3d, type: 3}
   spawnStartDelay: 2
-  spawnDelay: 1.25
+  spawnDelay: 1
   scoreText: {fileID: 878316294}
   livesText: {fileID: 317724496}
 --- !u!4 &353103240
